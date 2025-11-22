@@ -44,6 +44,7 @@ class Loss:
 class LossCategoricalCrossentropy(Loss):
     def forward(self, y_pred, y_true):
         samples = len(y_pred)
+        # Clip to prevent dead neurons
         y_pred_clipped = np.clip(y_pred, 1e-7, 1-1e-7)
         # If categorical labels
         if len(y_true.shape) == 1:

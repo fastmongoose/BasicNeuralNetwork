@@ -95,7 +95,6 @@ class Model:
             # Iterate over steps
             for step in range(train_steps):
                 if batch_size is None:
-                    # Note: You had a typo here, 'x' instead of 'X'
                     batch_X = X_shuffled
                     batch_y = y_shuffled
                 else:

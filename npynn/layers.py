@@ -76,12 +76,11 @@ class LayerConvolution2D:
         self.bias_regularizer_l1 = bias_regularizer_l1
         self.bias_regularizer_l2 = bias_regularizer_l2
 
-        # He Initialization
+        # He Initialization, different than glorot as glorot only works for DenseLayer
         fan_in = input_channels * kernel_size * kernel_size
         self.weights = (np.sqrt(2.0 / fan_in) * np.random.randn(n_filters, input_channels, kernel_size, kernel_size)).astype(np.float32)
         self.biases = np.zeros(n_filters, dtype=np.float32)
 
-    # --- Helper: IM2COL Indices ---
     def get_im2col_indices(self, x_shape):
         N, C, H, W = x_shape
         out_h = (H + 2 * self.padding - self.kernel_size) // self.stride + 1
@@ -121,7 +120,7 @@ class LayerConvolution2D:
         cols_reshaped = cols.reshape(C * self.kernel_size * self.kernel_size, -1, N)
         cols_reshaped = cols_reshaped.transpose(2, 0, 1)
         
-        # Use np.add.at for safe accumulation of gradients
+        # np.add.at for safe accumulation of gradients
         np.add.at(x_padded, (slice(None), k, i, j), cols_reshaped)
         
         if self.padding == 0:
@@ -138,7 +137,7 @@ class LayerConvolution2D:
         # Shape: (n_filters, Fan_in)
         self.weights_flat = self.weights.reshape(self.n_filters, -1)
         
-        # 3. Matrix Multiplication (The fast part!)
+        # 3. Matrix Multiplication
         # Shape: (n_filters, Batch*Out_pixels)
         output = np.dot(self.weights_flat, self.x_cols) + self.biases.reshape(-1, 1)
         
@@ -200,9 +199,7 @@ class LayerMaxPooling2D:
         self.inputs = inputs
         N, C, H, W = inputs.shape
         
-        # Note: This specific optimized implementation assumes stride == kernel_size
-        # and that H, W are divisible by kernel_size.
-        # For general pooling, a similar im2col approach is needed.
+        # This speedy version assumes stride == kernel_size and that H, W are divisible by kernel_size.
         
         new_H = H // self.kernel_size
         new_W = W // self.kernel_size
