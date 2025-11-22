@@ -251,6 +251,7 @@ class LayerInput:
         self.output = inputs
 
 
+# Old, extremely slow implementation, with sliding window approach
 # class LayerConvolution2DSlow:
 #     def __init__(self, input_channels, n_filters, kernel_size, stride=1, padding=0,
 #                 weight_regularizer_l1=0, weight_regularizer_l2=0,

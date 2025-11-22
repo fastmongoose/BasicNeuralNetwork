@@ -29,7 +29,7 @@ class ActivationLeakyRelu:
         return outputs
         
         
-# GeLU does nothing different to the final model. ReLU is enough for small models
+# Does nothing different than RelU or Leaky RelU
 class ActivationGeLu:
     def forward(self, inputs, training):
         self.inputs = inputs
