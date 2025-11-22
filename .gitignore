@@ -1,0 +1,4 @@
+data/
+crack_detection_cnn_numpy.model
+utils.py
+npynn/__pycache__
